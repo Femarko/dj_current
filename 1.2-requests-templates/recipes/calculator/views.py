@@ -28,3 +28,9 @@ DATA = {
 #     'ингредиент2': количество2,
 #   }
 # }
+def recipes(request):
+    context = {
+        'recipe': DATA
+    }
+    return render(request, 'calculator/index.html', context)
+    
