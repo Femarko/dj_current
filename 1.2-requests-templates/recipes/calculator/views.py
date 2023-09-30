@@ -29,7 +29,7 @@ DATA = {
 #   }
 # }
 def recipes(request, dish):
-    if dish == '' or dish not in DATA.keys():
+    if dish not in DATA.keys():
         return render(request, 'calculator/index.html')
     else:
         servings = int(request.GET.get('servings', 1))
