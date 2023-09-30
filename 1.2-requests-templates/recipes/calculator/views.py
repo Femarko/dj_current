@@ -29,10 +29,17 @@ DATA = {
 #   }
 # }
 def recipes(request, dish):
-    servings = int(request.GET.get('servings', 1))
-    recipe = {key: value * servings for (key, value) in DATA[dish].items()}
-    context = {
-        'recipe': recipe
-    }
-    return render(request, 'calculator/index.html', context)
+    if dish == '' or dish not in DATA.keys():
+        return render(request, 'calculator/index.html')
+    else:
+        servings = int(request.GET.get('servings', 1))
+        recipe = {key: value * servings for (key, value) in DATA[dish].items()}
+        context = {
+            'recipe': recipe
+        }
+        return render(request, 'calculator/index.html', context)
+
+def index(request):
+    return render(request, 'calculator/index.html')
+
     
