@@ -9,7 +9,7 @@ def index(request):
 def show_catalog(request):
     template = 'catalog.html'
     phone_objects = Phone.objects.all()
-    context = {'phone': phone_objects}
+    context = {'phones': phone_objects}
     return render(request, template, context)
 
 
