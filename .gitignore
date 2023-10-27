@@ -19,3 +19,4 @@ settings_local.py
 .DS_Store
 config.py
 test.py
+errors_scrins/
