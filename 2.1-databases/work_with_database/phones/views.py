@@ -9,6 +9,8 @@ def index(request):
 def show_catalog(request):
     template = 'catalog.html'
     phone_objects = Phone.objects.all()
+    for p in phone_objects:
+        print(f'{p.name} -> {p.slug}')
     context = {'phones': phone_objects}
     return render(request, template, context)
 

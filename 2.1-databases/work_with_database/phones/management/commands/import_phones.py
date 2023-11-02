@@ -1,6 +1,6 @@
 import csv
 
-import slugify
+from django.utils.text import slugify
 from django.core.management.base import BaseCommand
 from phones.models import Phone
 
