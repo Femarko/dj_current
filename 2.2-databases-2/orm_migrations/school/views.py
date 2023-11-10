@@ -22,6 +22,10 @@ def students_list(request):
 
     }
     print(object_list)
+    for student in object_list:
+        teachers = student.teachers.all()
+        print(teachers)
+
     # используйте этот параметр для упорядочивания результатов
     # https://docs.djangoproject.com/en/2.2/ref/models/querysets/#django.db.models.query.QuerySet.order_by
     # ordering = 'group'
