@@ -18,7 +18,7 @@ class Article(models.Model):
 
 class Tag(models.Model):
     title = models.CharField(max_length=256, verbose_name='Название')
-    articles = models.ManyToManyField(Article, related_name='scopes', through='Scope')
+    articles = models.ManyToManyField(Article, related_name='tag')
 
     class Meta:
         verbose_name = 'Раздел'
@@ -27,5 +27,5 @@ class Tag(models.Model):
 
 class Scope(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tag')
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='tag')
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='scopes')
     is_main = models.BooleanField(verbose_name='Основной', null=True)
