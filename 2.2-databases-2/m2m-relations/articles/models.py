@@ -18,8 +18,8 @@ class Article(models.Model):
 
 
 class Tag(models.Model):
-    title = models.CharField(max_length=256, verbose_name='Название')
-    articles = models.ManyToManyField(Article, related_name='tag')
+    name = models.CharField(max_length=256, verbose_name='Название')
+    articles = models.ManyToManyField(Article, related_name='tag', through='Scope')
 
 
 class Scope(models.Model):

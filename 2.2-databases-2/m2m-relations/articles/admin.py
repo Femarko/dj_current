@@ -33,7 +33,7 @@ class ArticleAdmin(admin.ModelAdmin):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ['title']
+    list_display = ['name']
 
 
 @admin.register(Scope)
