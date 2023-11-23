@@ -21,6 +21,9 @@ class Tag(models.Model):
     name = models.CharField(max_length=256, verbose_name='Название')
     articles = models.ManyToManyField(Article, related_name='tag', through='Scope')
 
+    def __str__(self):
+        return self.name
+
 
 class Scope(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='scopes', verbose_name='Раздел')
