@@ -1,14 +1,38 @@
 from django.contrib import admin
-from .models import Article, Tag, Scope
+from django.core.exceptions import ValidationError
+
+from articles.models import Article, Tag, Scope
+from django.forms import BaseInlineFormSet
+
+
+class ScopeInlineFormset(BaseInlineFormSet):
+    def clean(self):
+        print(f'self.forms: {self.forms}')
+        counter = 0
+        for form in self.forms:
+            print(f'form.cleaned_data: {form.cleaned_data}')
+            print(f'form.cleaned_data.keys(): {form.cleaned_data.keys()}')
+            if 'is_main' not in form.cleaned_data.keys():
+                raise ValidationError('Укажите основной раздел')
+            else:
+                if form.cleaned_data['is_main']:
+                    counter +=1
+        if counter > 1:
+            raise ValidationError('Укажите основной раздел')
+        else:
+            return super().clean()
+
 
 
 class ScopeInline(admin.TabularInline):
     model = Scope
+    formset = ScopeInlineFormset
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ['title', 'text', 'published_at', 'image']
     inlines = [ScopeInline]
+
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
