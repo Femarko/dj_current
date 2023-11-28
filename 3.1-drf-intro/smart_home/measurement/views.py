@@ -18,8 +18,5 @@ class ListCreateAPIView(ListAPIView):
 
 class CreateAPIView(APIView):
     def post(self, request):
-        sensor = Sensor()
-        sensor.name = request.data.get('name')
-        sensor.description = request.data.get('description')
-        sensor.save()
+        Sensor(name=request.data.get('name'), description=request.data.get('description')).save()
         return Response({'status': 'OK'})
