@@ -12,11 +12,15 @@ class ListCreateAPIView(ListAPIView):
     queryset = Sensor.objects.all()
     serializer_class = SensorSerialaizer
 
+    def post(self, request):
+        Sensor(name=request.data.get('name'), description=request.data.get('description')).save()
+        return Response({'status': 'OK'})
+
 
     class RetrieveUpdateAPIView(APIView):
         pass
 
-class CreateAPIView(APIView):
-    def post(self, request):
-        Sensor(name=request.data.get('name'), description=request.data.get('description')).save()
-        return Response({'status': 'OK'})
+# class CreateAPIView(APIView): # перенес в качестве def post в class ListCreateAPIView(ListAPIView)
+#     def post(self, request):
+#         Sensor(name=request.data.get('name'), description=request.data.get('description')).save()
+#         return Response({'status': 'OK'})
