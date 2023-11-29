@@ -21,9 +21,10 @@ class RetrieveUpdateAPIView(RetrieveAPIView):
     queryset = Sensor.objects.all()
     serializer_class = SensorSerialaizer
 
-    def patch(self, request):
-        for key, value in request.data.items():
-            print(f'{key} {value}')
+    def patch(self, request, pk):
+        print(self.queryset)
+        id_ = request.data.get('id')
+        return Response({'id': id_})
 
 # class CreateAPIView(APIView): # перенес в качестве def post в class ListCreateAPIView(ListAPIView)
 #     def post(self, request):
