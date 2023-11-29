@@ -42,6 +42,8 @@ class RetrieveUpdateAPIView(RetrieveAPIView):
         })
 
 class CreateAPIView(APIView):
+    def get(self, request):
+        return Response({'status': 'OK'})
     def post(self, request):
         sensor = Sensor.objects.get(pk=request.data.get('sensor')).id
         entry = Measurement(sensor_id=sensor, temperature=request.data.get('temperature'))
