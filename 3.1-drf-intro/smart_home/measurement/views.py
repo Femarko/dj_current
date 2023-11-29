@@ -4,7 +4,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Sensor
+from .models import Sensor, Measurement
 from .serializers import SensorSerialaizer
 
 
@@ -41,7 +41,15 @@ class RetrieveUpdateAPIView(RetrieveAPIView):
             }
         })
 
-# class CreateAPIView(APIView): # перенес в качестве def post в class ListCreateAPIView(ListAPIView)
-#     def post(self, request):
-#         Sensor(name=request.data.get('name'), description=request.data.get('description')).save()
-#         return Response({'status': 'OK'})
+class CreateAPIView(APIView):
+    def post(self, request):
+        sensor = Sensor.objects.get(pk=request.data.get('sensor')).id
+        entry = Measurement(sensor_id=sensor, temperature=request.data.get('temperature'))
+        entry.save()
+        return Response({
+            "entry created with the following id": entry.id,
+            "new data": {
+                "sensor_id": entry.sensor_id,
+                "temperature": entry.temperature
+            }
+        })
