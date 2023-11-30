@@ -5,12 +5,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Sensor, Measurement
-from .serializers import SensorSerialaizer
+from .serializers import SensorSerializer, MeasurementSerializer
 
 
 class ListCreateAPIView(ListAPIView):
     queryset = Sensor.objects.all()
-    serializer_class = SensorSerialaizer
+    serializer_class = SensorSerializer
 
     def post(self, request):
         entry = Sensor(name=request.data.get('name'), description=request.data.get('description'))
@@ -26,7 +26,7 @@ class ListCreateAPIView(ListAPIView):
 
 class RetrieveUpdateAPIView(RetrieveAPIView):
     queryset = Sensor.objects.all()
-    serializer_class = SensorSerialaizer
+    serializer_class = SensorSerializer
 
     def patch(self, request, pk):
         entry = Sensor.objects.get(pk=pk)
@@ -45,13 +45,27 @@ class CreateAPIView(APIView):
     def get(self, request):
         return Response({'status': 'OK'})
     def post(self, request):
-        sensor = Sensor.objects.get(pk=request.data.get('sensor')).id
+        sensor = Sensor.objects.get(pk=request.data.get('sensor'))
+        print(sensor)
         entry = Measurement(sensor_id=sensor, temperature=request.data.get('temperature'))
         entry.save()
-        return Response({
-            "entry created with the following id": entry.id,
-            "new data": {
-                "sensor_id": entry.sensor_id,
-                "temperature": entry.temperature
-            }
-        })
+        serialized_entry = MeasurementSerializer(entry)
+        print(serialized_entry)
+        # return Response({
+        #     "entry created with the following id": entry.id,
+        #     "new data": {
+        #         "sensor_id": serialized_entry['sensor_id'],
+        #         "temperature": entry.temperature
+        #     }
+        # })
+        return Response(serialized_entry.data)
+
+# class CreateAPIView(ListAPIView):
+#     queryset = Measurement.objects.all()
+#     serializer_class = MeasurementSerializer
+#
+#     def post(self, request):
+#         serializer = MeasurementSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
