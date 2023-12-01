@@ -45,27 +45,11 @@ class CreateAPIView(APIView):
     def get(self, request):
         return Response({'status': 'OK'})
     def post(self, request):
-        sensor = Sensor.objects.get(pk=request.data.get('sensor'))
-        print(sensor)
+        sensor = Sensor.objects.get(pk=request.data.get('sensor')) # так работает
+        # а так:
+        # sensor = Sensor.objects.get(pk=request.data.get('sensor')).id #- возвращается ошибка
+        # "Cannot assign "1": "Measurement.sensor_id" must be a "Sensor" instance".
         entry = Measurement(sensor_id=sensor, temperature=request.data.get('temperature'))
         entry.save()
         serialized_entry = MeasurementSerializer(entry)
-        print(serialized_entry)
-        # return Response({
-        #     "entry created with the following id": entry.id,
-        #     "new data": {
-        #         "sensor_id": serialized_entry['sensor_id'],
-        #         "temperature": entry.temperature
-        #     }
-        # })
         return Response(serialized_entry.data)
-
-# class CreateAPIView(ListAPIView):
-#     queryset = Measurement.objects.all()
-#     serializer_class = MeasurementSerializer
-#
-#     def post(self, request):
-#         serializer = MeasurementSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
