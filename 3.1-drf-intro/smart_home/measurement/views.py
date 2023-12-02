@@ -1,11 +1,11 @@
 # TODO: опишите необходимые обработчики, рекомендуется использовать generics APIView классы:
 # TODO: ListCreateAPIView, RetrieveUpdateAPIView, CreateAPIView
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Sensor, Measurement
-from .serializers import SensorSerializer, MeasurementSerializer
+from .serializers import SensorSerializer, MeasurementSerializer, SensorDetailSerializer
 
 
 class ListCreateAPIView(ListAPIView):
@@ -15,31 +15,27 @@ class ListCreateAPIView(ListAPIView):
     def post(self, request):
         entry = Sensor(name=request.data.get('name'), description=request.data.get('description'))
         entry.save()
-        return Response({
-            "entry created with the following id": entry.id,
-            "new data": {
-                "name": entry.name,
-                "description": entry.description
-            }
-        })
+        serialized_entry = SensorSerializer(entry)
+        return Response(serialized_entry.data)
 
-
-class RetrieveUpdateAPIView(RetrieveAPIView):
+class RetrieveUpdateAPIView(RetrieveUpdateAPIView):
     queryset = Sensor.objects.all()
     serializer_class = SensorSerializer
 
-    def patch(self, request, pk):
+    def patch(self, request, pk): # обновление датчика
         entry = Sensor.objects.get(pk=pk)
         entry.name = request.data.get('name')
         entry.description = request.data.get('description')
         entry.save()
-        return Response({
-            "entry with the following id was modified": pk,
-            "new data": {
-                "name": entry.name,
-                "description": entry.description
-            }
-        })
+        serialized_entry = SensorSerializer(entry)
+        return Response(serialized_entry.data)
+
+    def get(self, request, pk): # получение информации по датчику
+        serialized_entry = SensorDetailSerializer(Sensor.objects.get(pk=pk))
+        print(Sensor.objects.get(pk=pk))
+        print(serialized_entry.data)
+        return Response(serialized_entry.data)
+
 
 class CreateAPIView(APIView):
     def get(self, request):
