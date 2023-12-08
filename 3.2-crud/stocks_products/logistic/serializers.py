@@ -3,37 +3,42 @@ from logistic.models import Product, StockProduct, Stock
 
 
 class ProductSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Product
         fields = '__all__'
+
+    # for attr, value in super().validated_data.items:
+    #     print(f'{attr} {value}')
 
 
 class ProductPositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = StockProduct
-        fields = '__all__'
+        fields = ['product', 'quantity', 'price']
 
 
 class StockSerializer(serializers.ModelSerializer):
     positions = ProductPositionSerializer(many=True)
     class Meta:
         model = Stock
-        fields = '__all__'
+        fields = ['address', 'positions']
 
     def create(self, validated_data):
         # достаем связанные данные для других таблиц
         positions = validated_data.pop('positions')
 
         # создаем склад по его параметрам
-        stock = super().create(**validated_data)
+        stock = super().create(validated_data)
 
         # здесь вам надо заполнить связанные таблицы
         # в нашем случае: таблицу StockProduct
         # с помощью списка positions
         for position in positions:
-            StockProduct.create(stock=stock, position=position)
+            StockProduct.objects.create(stock=stock, **position)
 
         return stock
+
 
     def update(self, instance, validated_data):
         # достаем связанные данные для других таблиц
