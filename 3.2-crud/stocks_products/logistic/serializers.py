@@ -8,9 +8,6 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = '__all__'
 
-    # for attr, value in super().validated_data.items:
-    #     print(f'{attr} {value}')
-
 
 class ProductPositionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,5 +47,13 @@ class StockSerializer(serializers.ModelSerializer):
         # здесь вам надо обновить связанные таблицы
         # в нашем случае: таблицу StockProduct
         # с помощью списка positions
+
+        for position in positions:
+            position_id = StockProduct.objects.get(**position)['id']
+
+            # for stock_item in StockProduct.objects.filter(stock=stock.id):
+            #     print(stock_item)
+            #     StockProduct.objects.update(stock=stock_item, **position)
+            StockProduct.objects.update(pk=position_id, **position)
 
         return stock
