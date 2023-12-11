@@ -48,13 +48,17 @@ class StockSerializer(serializers.ModelSerializer):
         # в нашем случае: таблицу StockProduct
         # с помощью списка positions
         positions_to_update = StockProduct.objects.filter(stock=instance.id)
-
-        for position_index, position in enumerate(positions):
-            for position_to_update_index, position_to_update in enumerate(positions_to_update):
-                if position_index == position_to_update_index:
-                    position_to_update.product = position.get('product', position_to_update.product)
-                    position_to_update.quantity = position.get('quantity', position_to_update.quantity)
-                    position_to_update.price = position.get('price', position_to_update.price)
-                    position_to_update.save()
+        print(positions_to_update)
+        if positions_to_update.exists():
+            for position_index, position in enumerate(positions):
+                for position_to_update_index, position_to_update in enumerate(positions_to_update):
+                    if position_index == position_to_update_index:
+                        position_to_update.product = position.get('product', position_to_update.product)
+                        position_to_update.quantity = position.get('quantity', position_to_update.quantity)
+                        position_to_update.price = position.get('price', position_to_update.price)
+                        position_to_update.save()
+        else:
+            for position in positions:
+                StockProduct.objects.update(stock=instance.id, **position)
 
         return stock
